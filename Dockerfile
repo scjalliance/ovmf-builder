@@ -1,4 +1,4 @@
-FROM scjalliance/edk2:udk2017
+FROM scjalliance/edk2:udk2018
 
 ARG TARGET=RELEASE
 ARG TARGET_ARCH=X64
