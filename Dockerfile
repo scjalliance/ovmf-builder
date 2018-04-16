@@ -1,19 +1,21 @@
-FROM scjalliance/edk2:latest
+# --------
+# Stage 1: Build
+# -------
 
-ARG TARGET=RELEASE
-ARG TARGET_ARCH=X64
-ARG PLATFORM=OvmfPkg/OvmfPkgX64.dsc
-
-WORKDIR /opt/src/edk2/Conf
-
-RUN echo "TARGET                       = ${TARGET}" >> target.txt && \
-    echo "TARGET_ARCH                  = ${TARGET_ARCH}" >> target.txt && \
-    echo "ACTIVE_PLATFORM              = ${PLATFORM}" >> target.txt
-
-WORKDIR /opt/src/edk2
+FROM scjalliance/ovmf:latest as builder
 
 RUN ["/bin/bash", "-c", "source edksetup.sh && build"]
 
+
+# --------
+# Stage 2: Release
+# --------
+
+FROM alpine
+
+COPY --from=builder /opt/src/edk2/Build/OvmfX64/RELEASE_GCC5/FV/OVMF*.fd /data/
+
 VOLUME /ovmf
 
-CMD ["/bin/bash", "-c", "cp /opt/src/edk2/Build/OvmfX64/RELEASE_GCC5/FV/OVMF*.fd /ovmf"]
+CMD ["/bin/sh", "-c", "cp /data/* /ovmf"]
+
