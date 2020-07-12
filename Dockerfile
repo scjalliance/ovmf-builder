@@ -2,7 +2,7 @@
 # Stage 1: Build
 # -------
 
-FROM scjalliance/ovmf:udk2018 as builder
+FROM scjalliance/ovmf:stable202002 as builder
 
 RUN ["/bin/bash", "-c", "source edksetup.sh && build"]
 
